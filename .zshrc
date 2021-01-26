@@ -11,8 +11,14 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-
 export WORK_DIR=$HOME/Workspaces
+
+# osx
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# ruby
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+alias be="bundle exec"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -27,16 +33,27 @@ export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# postgres
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+
 # Add homebrew to the completion path
 fpath=("/usr/local/bin/" $fpath)
 
 # omise
-alias run-interface="cd $WORK_DIR/omise-interfaces && rails s -p 3000 -b 127.0.0.1"
-alias run-interface-sidekiq="cd $WORK_DIR/omise-interfaces && bin/sidekiq -c 1"
-alias run-gateway="cd $WORK_DIR/omise-gateway && bin/rails s -p 4500 -b 127.0.0.1"
+alias run-core="cd $WORK_DIR/omise-core && rails s -p 3000 -b 127.0.0.1"
+alias run-core-sidekiq="cd $WORK_DIR/omise-core && bin/sidekiq -c 1"
+alias run-pandora="cd $WORK_DIR/omise-pandora && bin/rails s -p 4500 -b 127.0.0.1"
+export PATH="$HOME/.bin:$PATH"
 
 # purepower config
 source ~/.purepower.zsh
 
+# yubikey and vault
+export GPG_TTY="$(tty)"
+export AWS_VAULT_BACKEND="pass"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpg-connect-agent updatestartuptty /bye
+
 # must be the last
 clear && cd $WORK_DIR
+
