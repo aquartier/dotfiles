@@ -5,6 +5,8 @@ volumes:
     external: true
   esdata:
     external: true
+  mongodata:
+    external: true
 
 services:
   redis:
@@ -16,7 +18,7 @@ services:
       - 6379:6379
 
   postgres:
-    image: postgres:11-alpine
+    image: postgres:13-alpine
     container_name: postgres
     restart: unless-stopped
     network_mode: bridge
@@ -27,8 +29,21 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  mongo:
+    image: mongo:4
+    container_name: mongo
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+
   elasticsearch:
-    image: elasticsearch:6.7.2
+    image: elasticsearch:7.10.1
     container_name: elasticsearch
     restart: unless-stopped
     network_mode: bridge
